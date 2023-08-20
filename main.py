@@ -1,39 +1,19 @@
-# Define constants using string literals
+# Constants as string literals
 CONSONANTS = "BCDFGHJKLMNPQRSTVWXYZ"
 VOWELS = "AEIOU"
 
-def encoder(word, language_number):
-    encoded_word = []
+# Decoder and encoder function, more concise and easier to manage
+def transform_word(word, language_number, operation):
+    transformed_word = []
     for i, char in enumerate(word):
-        if char in CONSONANTS:
-            encoded_char = CONSONANTS[(i + language_number + CONSONANTS.index(char)) % len(CONSONANTS)]
-        elif char in VOWELS:
-            encoded_char = VOWELS[(i + language_number + VOWELS.index(char)) % len(VOWELS)]
-        else:
-            encoded_char = char
-        encoded_word.append(encoded_char)
-    return ''.join(encoded_word)
-
-def decoder(word, language_number):
-    decoded_word = []
-    for i, char in enumerate(word):
-        if char in CONSONANTS:
-            decoded_char = CONSONANTS[(CONSONANTS.index(char) - i - language_number) % len(CONSONANTS)]
-        elif char in VOWELS:
-            decoded_char = VOWELS[(VOWELS.index(char) - i - language_number) % len(VOWELS)]
-        else:
-            decoded_char = char
-        decoded_word.append(decoded_char)
-    return ''.join(decoded_word)
+        char_list = CONSONANTS if char in CONSONANTS else VOWELS if char in VOWELS else [char]
+        index = (i + language_number + char_list.index(char)) % len(char_list) if operation == 0 else (char_list.index(char) - i - language_number) % len(char_list) if operation == 1 else i
+        transformed_char = char_list[index % len(char_list)]
+        transformed_word.append(transformed_char)
+    return ''.join(transformed_word)
 
 def process_word_list(word_list, language_number, operation):
-    processed_words = []
-    for word in word_list:
-        if operation == 0:
-            processed_words.append(encoder(word, language_number))
-        elif operation == 1:
-            processed_words.append(decoder(word, language_number))
-    return processed_words
+    return [transform_word(word, language_number, operation) for word in word_list]
 
 def main():
     while True:
